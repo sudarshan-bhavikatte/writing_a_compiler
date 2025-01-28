@@ -1,0 +1,3 @@
+/home/sudu/prac/cpp/hydrogen/build/CMakeFiles/hydro.dir
+/home/sudu/prac/cpp/hydrogen/build/CMakeFiles/edit_cache.dir
+/home/sudu/prac/cpp/hydrogen/build/CMakeFiles/rebuild_cache.dir
