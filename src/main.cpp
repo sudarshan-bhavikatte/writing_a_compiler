@@ -27,17 +27,17 @@ int main(int argc, char *argv[]){
     Tokenizer tokenizer(contents);
     vector<Token> tokens = tokenizer.tokenize();
     Parser parser(move(tokens));
-    optional<NodeExit> tree = parser.parse();
+    optional<NodeProg> prog = parser.parse_prog();
 
-    if(!tree.has_value()) {
+    if(!prog.has_value()) {
         cerr << "Error parsing file" << endl;
         exit(EXIT_FAILURE);
     }
 
     {
-        Generator generator(tree.value());
+        Generator generator(prog.value());
         fstream file("out.asm", ios::out);
-        file << generator.generate();
+        file << generator.gen_prog();
     }
 
     system("nasm -felf64 out.asm");

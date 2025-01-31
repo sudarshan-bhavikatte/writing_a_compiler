@@ -4,6 +4,11 @@ enum class  TokenType {
     EXIT,
     INT_LIT,
     SEMICOLON,
+    OPEN_PAREN,
+    CLOSE_PAREN,
+    IDENT,
+    LET,
+    EQUALS,
 };
 
 struct Token {
@@ -15,7 +20,7 @@ class Tokenizer
 {
 public:
     inline explicit Tokenizer(const string& src )
-        : m_src(src)
+        : m_src(move(src))
     {
 
     };
@@ -39,10 +44,17 @@ public:
                     buf.clear();
                     continue;
                 }
+                else if (buf == "let") {
+                    tokens.push_back({.type = TokenType::LET});
+                    buf.clear();
+                    continue;
+                }
+
                 else
                 {
-                    cerr << "Unknown keyword: " << buf << endl;
-                    exit(EXIT_FAILURE);
+                    tokens.push_back({.type = TokenType::IDENT, .value = buf});
+                    buf.clear();
+                    continue;
                 }
             }
             else if (isdigit(peek().value()))
@@ -56,9 +68,23 @@ public:
                 buf.clear();
                 continue;
             }
+            else if (peek().value() == '(') {
+                tokens.push_back({.type = TokenType::OPEN_PAREN});
+                consume();
+            }
+            else if (peek().value() == ')') {
+                tokens.push_back({.type = TokenType::CLOSE_PAREN});
+                consume();
+            }
             else if (peek().value() == ';')
             {
                 tokens.push_back({.type = TokenType::SEMICOLON});
+                consume();
+                continue;
+            }
+            else if (peek().value() == '=')
+            {
+                tokens.push_back({.type = TokenType::EQUALS});
                 consume();
                 continue;
             }
@@ -67,9 +93,10 @@ public:
                 consume();
                 continue;
             }
+
             else
             {
-                cerr << "Unexpected character: '" << peek().value() << "' at index " << m_index << endl;
+                cerr << "Error : " << buf << endl;
                 exit(EXIT_FAILURE);
             }
         }
@@ -79,15 +106,15 @@ public:
     }
 
 private:
-    [[nodiscard]] inline optional<char> peek(int ahead = 1) const
+    [[nodiscard]] inline optional<char> peek(int offset = 0) const
     {
-        if (m_index + ahead > m_src.length())
+        if (m_index + offset >= m_src.length())
         {
             return {};
         }
         else
         {
-            return m_src.at(m_index);
+            return m_src.at(m_index + offset);
         }
     }
     inline char consume()
