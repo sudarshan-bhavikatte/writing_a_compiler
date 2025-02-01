@@ -7,7 +7,7 @@
 #include "./generation.hpp"
 #include "./parser.hpp"
 #include "./tokenization.hpp"
-
+#include "./arena.hpp"
 using namespace std;
 
 

@@ -16,9 +16,24 @@ struct NodeExprINT_LIT {
 struct NodeExprIDENT {
     Token IDENT;
 };
+struct NodeExpr;
+
+struct BinExprMul {
+    NodeExpr* lhs;
+    NodeExpr* rhs;
+};
+
+struct BinExprAdd {
+    NodeExpr* lhs;
+    NodeExpr* rhs;
+};
+
+struct BinExpr {
+    variant<BinExprMul, BinExprAdd> vari;
+};
 
 struct NodeExpr {
-    variant<NodeExprINT_LIT, NodeExprIDENT> vari;
+    variant<NodeExprINT_LIT*, NodeExprIDENT*, BinExpr*> vari;
 };
 
 struct NodeStmtExit {
@@ -39,6 +54,8 @@ struct NodeStmt {
 struct NodeProg {
     vector<NodeStmt> stmts;
 };
+
+
 
 
 class Parser {
