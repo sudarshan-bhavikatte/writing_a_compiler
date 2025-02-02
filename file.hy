@@ -1,3 +1,3 @@
-let x = 5;
+let x = 10;
 let y = x;
 exit(x);
