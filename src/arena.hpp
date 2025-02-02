@@ -9,7 +9,7 @@ public:
         m_offset = m_buffer;
     }
 
-    template<typename T>;
+    template<typename T>
     inline T* alloc() {
         byte* offset = m_offset;
         offset += sizeof(T);
