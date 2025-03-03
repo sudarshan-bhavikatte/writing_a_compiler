@@ -9,6 +9,7 @@ enum class  TokenType {
     IDENT,
     LET,
     EQUALS,
+    PLUS,
 };
 
 struct Token {
@@ -86,6 +87,11 @@ public:
             {
                 tokens.push_back({.type = TokenType::EQUALS});
                 consume();
+                continue;
+            }
+            else if (peek().value() == '+') {
+                consume();
+                tokens.push_back({.type = TokenType::PLUS});
                 continue;
             }
             else if (isspace(peek().value()))

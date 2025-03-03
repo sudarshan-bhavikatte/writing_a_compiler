@@ -1,28 +1,33 @@
 #pragma once
 
+#include <cstdlib>   // for malloc/free
+#include <cstddef>   // for std::byte
+
 class ArenaAllocator {
 public:
-    inline ArenaAllocator(size_t bytes)
-    :m_size(bytes)
+    explicit ArenaAllocator(size_t bytes)
+        : m_size(bytes)
     {
-        m_buffer = static_cast<byte*>(malloc(m_size));
+        m_buffer = reinterpret_cast<std::byte*>(malloc(m_size));
         m_offset = m_buffer;
     }
 
     template<typename T>
-    inline T* alloc() {
-        byte* offset = m_offset;
-        offset += sizeof(T);
-        return offset;
+    T* alloc() {
+        // Allocate memory for T from the arena.
+        T* ret = reinterpret_cast<T*>(m_offset);
+        m_offset += sizeof(T);
+        return ret;
     }
 
-    inline ArenaAllocator operator = ( const ArenaAllocator& other) = delete;
+    // Delete the assignment operator
+    ArenaAllocator& operator=(const ArenaAllocator& other) = delete;
 
-    inline ~ArenaAllocator() {
+    ~ArenaAllocator() {
         free(m_buffer);
     }
 private:
     size_t m_size;
-    byte* m_buffer;
-    byte* m_offset;
+    std::byte* m_buffer;
+    std::byte* m_offset;
 };
